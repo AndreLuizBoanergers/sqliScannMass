@@ -206,18 +206,17 @@ async function insertPayloadUrl(url, param, payloads, executeVerification, queue
     let status = false;
     for (let pos of positions) {
         let countPaylod = 0;
-        let shouldStop = false;
-        if (shouldStop) return;
+        if (status) break;
         for (const payload of payloads) {
             countPaylod++;
-            if (shouldStop) return;
+            if (shouldStop) break;
             let newUrl = url.substring(0, pos) + payload + url.substring(pos + 1);      
             const result = await startScan(newUrl, executeVerification, payload);
             if (result === true) {
                 status = true;
-                return shouldStop = true;
+                break;
             }
-            if(countPaylod == 27) return;
+            if(countPaylod == 27) break;
         }
     }
     return status;
@@ -251,7 +250,7 @@ async function veryfyErrosSqli(url, erros, pagina, executeVerification, payload)
     let status = false;
     console.log(url)
     for (const banco in erros) {
-        if(status) return;
+        if(status) break;
         if (Object.hasOwnProperty.call(erros, banco)) {
             const errosBanco = erros[banco];
             for (const tipoErro in errosBanco) {
@@ -269,7 +268,7 @@ async function veryfyErrosSqli(url, erros, pagina, executeVerification, payload)
                         console.table(infos);
                         fs.appendFileSync(`./output/vuls.txt` , `${url}` + '\n');
                         status = true;
-                        return;
+                        break;
                     }
                 }
 
